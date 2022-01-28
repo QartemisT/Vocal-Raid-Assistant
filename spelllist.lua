@@ -325,11 +325,15 @@ local interruptList = {
 }
 
 function addon:GetAllSpellIds()
+	print('getting spells')
 	local spells = {}
 	for _, v in pairs(spellList) do
 		for k, v in pairs(v) do
 			spells[k] = v
 		end
+	end
+	for k, v in pairs (interruptList) do
+		spells[k] = v
 	end
 	return spells
 end

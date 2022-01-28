@@ -117,6 +117,20 @@ local function clearAll(area)
 	profile.general.area[area].enableInterrupts = false
 end
 
+local function importFromOmniCD(area)
+	local omnicd = OmniCD[1].profile["Party"][area]
+	local spells = addon:GetAllSpellIds()
+	for k, v in pairs(omnicd.spells) do
+		if (v == true) then
+			if spells[tonumber(k)] then
+				profile.general.area[area].spells[k] = v
+			else
+				print(L["Unsupported by VRA: "] .. GetSpellInfo(k))
+			end
+		end
+	end
+end
+
 function importSpellSelection(importString, area)
 	local success, importDeserialized = addon.EXP:Deserialize(importString)
 	if(success) then
@@ -392,6 +406,13 @@ local spells = {
 				end
 			end
 		},
+		importOmniCD = {
+			name = L["Import from OmniCD"],
+			order = 7,
+			type = "execute",
+			disabled = function() return not IsAddOnLoaded("OmniCD") end,
+			func = function(info) importFromOmniCD(info[2]) end
+		},
 		interrupts = {
 			type = "group",
 			name = L["Interrupts"],
@@ -411,7 +432,7 @@ local spells = {
 					end
 				}
 			}
-		}
+		},
 	}
 }
 
